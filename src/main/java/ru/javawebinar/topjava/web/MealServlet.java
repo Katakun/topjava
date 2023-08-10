@@ -8,13 +8,15 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalTime;
 import java.util.List;
 
 public class MealServlet extends HttpServlet {
     private List<MealTo> mealToList;
 
     public void init() throws ServletException {
-        mealToList = MealsUtil.mealToMealToList(MealsUtil.getMealList(), MealsUtil.CALORIES_PER_DAY);
+        mealToList = MealsUtil.filteredByStreams(MealsUtil.getMealList(),
+                LocalTime.of(0, 0), LocalTime.of(23, 59), MealsUtil.CALORIES_PER_DAY);
     }
 
     @Override
