@@ -15,5 +15,5 @@ public interface Storage {
 
     void delete(int index);
 
-    List<Meal> getALl();
+    List<Meal> getAll();
 }

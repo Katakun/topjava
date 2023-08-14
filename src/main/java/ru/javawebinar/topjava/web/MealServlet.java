@@ -25,7 +25,7 @@ public class MealServlet extends HttpServlet {
     public void init() throws ServletException {
         storage = MealsData.getStorage();
         MealsData.fill();
-        mealToList = MealsUtil.filteredByStreams(MealsData.getStorage().getALl(),
+        mealToList = MealsUtil.filteredByStreams(MealsData.getStorage().getAll(),
                 LocalTime.of(0, 0), LocalTime.of(23, 59), MealsData.CALORIES_PER_DAY);
     }
 
@@ -44,7 +44,7 @@ public class MealServlet extends HttpServlet {
         editMeal.setCalories(calories);
         storage.update(editMeal, id);
 
-        mealToList = MealsUtil.filteredByStreams(MealsData.getStorage().getALl(),
+        mealToList = MealsUtil.filteredByStreams(MealsData.getStorage().getAll(),
                 LocalTime.of(0, 0), LocalTime.of(23, 59), MealsData.CALORIES_PER_DAY);
         response.sendRedirect("meals");
     }
@@ -60,7 +60,7 @@ public class MealServlet extends HttpServlet {
             case "delete":
                 int id = Integer.parseInt(request.getParameter("id"));
                 storage.delete(id);
-                mealToList = MealsUtil.filteredByStreams(MealsData.getStorage().getALl(),
+                mealToList = MealsUtil.filteredByStreams(MealsData.getStorage().getAll(),
                         LocalTime.of(0, 0), LocalTime.of(23, 59), MealsData.CALORIES_PER_DAY);
                 response.sendRedirect("meals");
                 return;

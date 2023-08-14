@@ -7,9 +7,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ListStorage implements Storage {
+// TODO многопоточность
+public class MapStorage implements Storage {
+    private static final MapStorage INSTANCE = new MapStorage();
+    private static int counter;
+    private Map<Integer, Meal> storage;
 
-    private Map<Integer, Meal> storage = new HashMap<>();
+    private MapStorage() {
+        counter = 0;
+        this.storage = new HashMap<>();
+    }
+
+    public static MapStorage getStorage() {
+        return INSTANCE;
+    }
+
+    public int getCounter() {
+        return counter;
+    }
 
     @Override
     public void clear() {
@@ -23,6 +38,7 @@ public class ListStorage implements Storage {
 
     @Override
     public void save(Meal meal) {
+        counter++;
         storage.put(meal.getId(), meal);
     }
 
@@ -37,7 +53,7 @@ public class ListStorage implements Storage {
     }
 
     @Override
-    public List<Meal> getALl() {
+    public List<Meal> getAll() {
         return new ArrayList<>(storage.values());
     }
 }
