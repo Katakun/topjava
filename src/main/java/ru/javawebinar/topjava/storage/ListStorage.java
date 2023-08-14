@@ -3,38 +3,41 @@ package ru.javawebinar.topjava.storage;
 import ru.javawebinar.topjava.model.Meal;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ListStorage implements Storage {
 
-    private List<Meal> list = new ArrayList<>();
+    private Map<Integer, Meal> storage = new HashMap<>();
+
     @Override
     public void clear() {
-        list.clear();
+        storage.clear();
     }
 
     @Override
-    public void update(Meal meal, int index) {
-        list.set(index, meal);
+    public void update(Meal meal, int id) {
+        storage.replace(id, meal);
     }
 
     @Override
     public void save(Meal meal) {
-        list.add(meal);
+        storage.put(meal.getId(), meal);
     }
 
     @Override
-    public Meal get(int index) {
-        return list.get(index);
+    public Meal get(int id) {
+        return storage.get(id);
     }
 
     @Override
-    public void delete(int index) {
-        list.remove(index);
+    public void delete(int id) {
+        storage.remove(id);
     }
 
     @Override
     public List<Meal> getALl() {
-        return list;
+        return new ArrayList<>(storage.values());
     }
 }

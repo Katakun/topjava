@@ -1,6 +1,8 @@
 package ru.javawebinar.topjava.web;
 
+import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.MealTo;
+import ru.javawebinar.topjava.storage.Storage;
 import ru.javawebinar.topjava.util.MealsData;
 import ru.javawebinar.topjava.util.MealsUtil;
 
@@ -9,21 +11,65 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class MealServlet extends HttpServlet {
+    DateTimeFormatter DATETIMEFORMATTER = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
     private List<MealTo> mealToList;
+    private Storage storage;
+
 
     public void init() throws ServletException {
+        storage = MealsData.getStorage();
         MealsData.fill();
         mealToList = MealsUtil.filteredByStreams(MealsData.getStorage().getALl(),
                 LocalTime.of(0, 0), LocalTime.of(23, 59), MealsData.CALORIES_PER_DAY);
     }
 
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws javax.servlet.ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
+
+        int id = Integer.parseInt(request.getParameter("id"));
+        String dateTime = request.getParameter("dateTime");
+        String description = request.getParameter("description");
+        int calories = Integer.parseInt(request.getParameter("calories"));
+
+        Meal editMeal = storage.get(id);
+        LocalDateTime localDateTime = LocalDateTime.parse(dateTime, DATETIMEFORMATTER);
+        editMeal.setDateTime(localDateTime);
+        editMeal.setDescription(description);
+        editMeal.setCalories(calories);
+        storage.update(editMeal, id);
+
+        mealToList = MealsUtil.filteredByStreams(MealsData.getStorage().getALl(),
+                LocalTime.of(0, 0), LocalTime.of(23, 59), MealsData.CALORIES_PER_DAY);
+        response.sendRedirect("meals");
+    }
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setAttribute("mealToList", mealToList);
-        request.getRequestDispatcher("meals.jsp").forward(request, response);
+        String action = request.getParameter("action");
+        if (action == null) {
+            request.getRequestDispatcher("meals.jsp").forward(request, response);
+            return;
+        }
+        int id = Integer.parseInt(request.getParameter("id"));
+        switch (action) {
+            case "delete":
+                storage.delete(id);
+                mealToList = MealsUtil.filteredByStreams(MealsData.getStorage().getALl(),
+                        LocalTime.of(0, 0), LocalTime.of(23, 59), MealsData.CALORIES_PER_DAY);
+                response.sendRedirect("meals");
+                return;
+            case "edit":
+                request.setAttribute("meal", storage.get(id));
+                request.getRequestDispatcher("/edit.jsp").forward(request, response);
+                break;
+            case "":
+                request.getRequestDispatcher("meals.jsp").forward(request, response);
+        }
     }
 }
