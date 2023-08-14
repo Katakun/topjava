@@ -56,20 +56,24 @@ public class MealServlet extends HttpServlet {
             request.getRequestDispatcher("meals.jsp").forward(request, response);
             return;
         }
-        int id = Integer.parseInt(request.getParameter("id"));
         switch (action) {
             case "delete":
+                int id = Integer.parseInt(request.getParameter("id"));
                 storage.delete(id);
                 mealToList = MealsUtil.filteredByStreams(MealsData.getStorage().getALl(),
                         LocalTime.of(0, 0), LocalTime.of(23, 59), MealsData.CALORIES_PER_DAY);
                 response.sendRedirect("meals");
                 return;
             case "edit":
+                id = Integer.parseInt(request.getParameter("id"));
                 request.setAttribute("meal", storage.get(id));
                 request.getRequestDispatcher("/edit.jsp").forward(request, response);
                 break;
-            case "":
-                request.getRequestDispatcher("meals.jsp").forward(request, response);
+            case "add":
+                Meal meal = new Meal(LocalDateTime.now(), "", 0);
+                storage.save(meal);
+                request.setAttribute("meal", meal);
+                request.getRequestDispatcher("edit.jsp").forward(request, response);
         }
     }
 }
