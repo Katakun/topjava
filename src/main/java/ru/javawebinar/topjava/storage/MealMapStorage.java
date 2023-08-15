@@ -11,7 +11,7 @@ import java.util.Map;
 public class MealMapStorage implements Storage {
     private static final MealMapStorage INSTANCE = new MealMapStorage();
     private static int counter;
-    private Map<Integer, Meal> storage;
+    private volatile Map<Integer, Meal> storage;
 
     private MealMapStorage() {
         counter = 0;
