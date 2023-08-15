@@ -1,6 +1,6 @@
 package ru.javawebinar.topjava.model;
 
-import ru.javawebinar.topjava.storage.MapStorage;
+import ru.javawebinar.topjava.storage.MealMapStorage;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -13,7 +13,7 @@ public class Meal {
     private int calories;
 
     public Meal(LocalDateTime dateTime, String description, int calories) {
-        id = MapStorage.getStorage().getCounter() + 1;
+        id = MealMapStorage.getStorage().getCounter();
         this.dateTime = dateTime;
         this.description = description;
         this.calories = calories;

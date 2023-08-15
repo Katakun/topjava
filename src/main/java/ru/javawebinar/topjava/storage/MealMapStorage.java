@@ -8,17 +8,17 @@ import java.util.List;
 import java.util.Map;
 
 // TODO многопоточность
-public class MapStorage implements Storage {
-    private static final MapStorage INSTANCE = new MapStorage();
+public class MealMapStorage implements Storage {
+    private static final MealMapStorage INSTANCE = new MealMapStorage();
     private static int counter;
     private Map<Integer, Meal> storage;
 
-    private MapStorage() {
+    private MealMapStorage() {
         counter = 0;
         this.storage = new HashMap<>();
     }
 
-    public static MapStorage getStorage() {
+    public static MealMapStorage getStorage() {
         return INSTANCE;
     }
 
@@ -38,7 +38,9 @@ public class MapStorage implements Storage {
 
     @Override
     public void save(Meal meal) {
-        counter++;
+        synchronized (this) {
+            counter++;
+        }
         storage.put(meal.getId(), meal);
     }
 
