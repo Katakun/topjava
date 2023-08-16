@@ -48,32 +48,34 @@ public class MealServlet extends HttpServlet {
                 LocalTime.of(0, 0), LocalTime.of(23, 59), MealsData.CALORIES_PER_DAY);
         response.sendRedirect("meals");
     }
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setAttribute("mealToList", mealToList);
         String action = request.getParameter("action");
         if (action == null) {
             request.getRequestDispatcher("meals.jsp").forward(request, response);
-            return;
-        }
-        switch (action) {
-            case "delete":
-                int id = Integer.parseInt(request.getParameter("id"));
-                storage.delete(id);
-                mealToList = MealsUtil.filteredByStreams(MealsData.getStorage().getAll(),
-                        LocalTime.of(0, 0), LocalTime.of(23, 59), MealsData.CALORIES_PER_DAY);
-                response.sendRedirect("meals");
-                return;
-            case "edit":
-                id = Integer.parseInt(request.getParameter("id"));
-                request.setAttribute("meal", storage.get(id));
-                request.getRequestDispatcher("/edit.jsp").forward(request, response);
-                break;
-            case "add":
-                Meal meal = new Meal(LocalDateTime.now(), "", 0);
-                storage.save(meal);
-                request.setAttribute("meal", meal);
-                request.getRequestDispatcher("edit.jsp").forward(request, response);
+        } else {
+            switch (action) {
+                case "delete":
+                    int id = Integer.parseInt(request.getParameter("id"));
+                    storage.delete(id);
+                    mealToList = MealsUtil.filteredByStreams(MealsData.getStorage().getAll(),
+                            LocalTime.of(0, 0), LocalTime.of(23, 59), MealsData.CALORIES_PER_DAY);
+                    response.sendRedirect("meals");
+                    break;
+                case "edit":
+                    id = Integer.parseInt(request.getParameter("id"));
+                    request.setAttribute("meal", storage.get(id));
+                    request.getRequestDispatcher("/edit.jsp").forward(request, response);
+                    break;
+                case "add":
+                    Meal meal = new Meal(LocalDateTime.now(), "", 0);
+                    storage.save(meal);
+                    request.setAttribute("meal", meal);
+                    request.getRequestDispatcher("edit.jsp").forward(request, response);
+                    break;
+            }
         }
     }
 }
