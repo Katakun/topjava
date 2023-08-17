@@ -5,6 +5,7 @@ import ru.javawebinar.topjava.storage.MealMapStorage;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 public class Meal {
     private final int id;
@@ -26,6 +27,10 @@ public class Meal {
 
     public LocalDateTime getDateTime() {
         return dateTime;
+    }
+
+    public String getDateTimeInString() {
+        return dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
     }
 
     public void setDateTime(LocalDateTime dateTime) {
