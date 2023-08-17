@@ -21,7 +21,7 @@
     <input type="text" name="description" value="${meal.description}"/><br>
 
     Calories:
-    <input type="text" name="calories" value="${meal.calories}"/><br>
+    <input type="number" name="calories" value="${meal.calories}"/><br>
     <button type="submit">Save</button>
     <button type="reset" onclick="window.history.back()">Cancel</button>
 </form>
