@@ -1,5 +1,6 @@
 package ru.javawebinar.topjava.storage;
 
+import org.slf4j.Logger;
 import ru.javawebinar.topjava.model.Meal;
 
 import java.util.ArrayList;
@@ -7,7 +8,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 public class MealMapStorage implements Storage {
+    private static final Logger log = getLogger(Meal.class);
     private static final MealMapStorage INSTANCE = new MealMapStorage();
     private static int counter;
     private volatile Map<Integer, Meal> storage;
@@ -39,6 +43,7 @@ public class MealMapStorage implements Storage {
     public void save(Meal meal) {
         synchronized (this) {
             meal.setId(counter);
+            log.debug("new meal id: " + counter);
             counter++;
         }
         storage.put(meal.getId(), meal);

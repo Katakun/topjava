@@ -16,7 +16,6 @@ public class Meal {
         this.dateTime = dateTime;
         this.description = description;
         this.calories = calories;
-        System.out.println("My ID: " + id);
     }
 
     public int getId() {
