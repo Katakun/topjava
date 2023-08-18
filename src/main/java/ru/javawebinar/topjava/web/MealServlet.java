@@ -2,7 +2,7 @@ package ru.javawebinar.topjava.web;
 
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.MealTo;
-import ru.javawebinar.topjava.storage.Storage;
+import ru.javawebinar.topjava.storage.MealStorage;
 import ru.javawebinar.topjava.util.MealsData;
 import ru.javawebinar.topjava.util.MealsUtil;
 
@@ -19,7 +19,7 @@ import java.util.List;
 public class MealServlet extends HttpServlet {
     DateTimeFormatter DATETIMEFORMATTER = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
     private List<MealTo> mealToList;
-    private Storage storage;
+    private MealStorage storage;
 
 
     public void init() throws ServletException {
@@ -44,11 +44,11 @@ public class MealServlet extends HttpServlet {
                 editMeal.setDateTime(localDateTime);
                 editMeal.setDescription(description);
                 editMeal.setCalories(calories);
-                storage.update(editMeal, id);
+                storage.update(editMeal);
                 break;
             case "Add":
                 Meal newMeal = new Meal(localDateTime, description, calories);
-                storage.save(newMeal);
+                storage.create(newMeal);
                 break;
         }
         mealToList = MealsUtil.filteredByStreams(MealsData.getStorage().getAll(),

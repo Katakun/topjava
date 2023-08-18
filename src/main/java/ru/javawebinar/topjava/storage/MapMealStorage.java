@@ -10,53 +10,46 @@ import java.util.Map;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
-public class MealMapStorage implements Storage {
+public class MapMealStorage implements MealStorage {
     private static final Logger log = getLogger(Meal.class);
-    private static final MealMapStorage INSTANCE = new MealMapStorage();
+    private static final MapMealStorage INSTANCE = new MapMealStorage();
     private static int counter;
     private volatile Map<Integer, Meal> storage;
 
-    private MealMapStorage() {
+    private MapMealStorage() {
         counter = 0;
         this.storage = new HashMap<>();
     }
 
-    public static MealMapStorage getStorage() {
+    public static MapMealStorage getStorage() {
         return INSTANCE;
     }
 
-    public int getCounter() {
-        return counter;
+    @Override
+    public Meal update(Meal meal) {
+        storage.replace(meal.getId(), meal);
+        return meal;
     }
 
     @Override
-    public void clear() {
-        storage.clear();
-    }
-
-    @Override
-    public void update(Meal meal, int id) {
-        storage.replace(id, meal);
-    }
-
-    @Override
-    public void save(Meal meal) {
+    public Meal create(Meal meal) {
         synchronized (this) {
             meal.setId(counter);
-            log.debug("new meal id: " + counter);
+            log.debug("new meal key: " + counter);
             counter++;
         }
         storage.put(meal.getId(), meal);
+        return meal;
     }
 
     @Override
-    public Meal get(int id) {
-        return storage.get(id);
+    public Meal get(int key) {
+        return storage.get(key);
     }
 
     @Override
-    public void delete(int id) {
-        storage.remove(id);
+    public void delete(int key) {
+        storage.remove(key);
     }
 
     @Override
