@@ -33,17 +33,24 @@ public class MealServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
 
         int id = Integer.parseInt(request.getParameter("id"));
-        String dateTime = request.getParameter("dateTime");
+        LocalDateTime localDateTime = LocalDateTime.parse(request.getParameter("dateTime"), DATETIMEFORMATTER);
         String description = request.getParameter("description");
         int calories = Integer.parseInt(request.getParameter("calories"));
 
-        Meal editMeal = storage.get(id);
-        LocalDateTime localDateTime = LocalDateTime.parse(dateTime, DATETIMEFORMATTER);
-        editMeal.setDateTime(localDateTime);
-        editMeal.setDescription(description);
-        editMeal.setCalories(calories);
-        storage.update(editMeal, id);
-
+        String action = request.getParameter("action");
+        switch (action) {
+            case "Edit":
+                Meal editMeal = storage.get(id);
+                editMeal.setDateTime(localDateTime);
+                editMeal.setDescription(description);
+                editMeal.setCalories(calories);
+                storage.update(editMeal, id);
+                break;
+            case "Add":
+                Meal newMeal = new Meal(localDateTime, description, calories);
+                storage.save(newMeal);
+                break;
+        }
         mealToList = MealsUtil.filteredByStreams(MealsData.getStorage().getAll(),
                 LocalTime.of(0, 0), LocalTime.of(23, 59), MealsData.CALORIES_PER_DAY);
         response.sendRedirect("meals");
@@ -72,7 +79,6 @@ public class MealServlet extends HttpServlet {
                     break;
                 case "add":
                     Meal meal = new Meal(LocalDateTime.now(), "", 0);
-                    storage.save(meal);
                     request.setAttribute("meal", meal);
                     request.setAttribute("action", "Add");
                     request.getRequestDispatcher("edit.jsp").forward(request, response);

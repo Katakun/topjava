@@ -13,6 +13,7 @@
 <jps:useBean id="action" type="java.lang.String" scope="request"/>
 <h2>${action} meal</h2>
 <form method="post" action="meals" enctype="application/x-www-form-urlencoded">
+    <input type="hidden" name="action" value="${action}">
     <input type="hidden" name="id" value="${meal.id}">
     DateTime:
     <input type="datetime-local" name="dateTime" value="${meal.dateTimeInString}"/><br>

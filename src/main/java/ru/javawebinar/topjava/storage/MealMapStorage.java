@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-// TODO многопоточность
 public class MealMapStorage implements Storage {
     private static final MealMapStorage INSTANCE = new MealMapStorage();
     private static int counter;
