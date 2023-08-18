@@ -12,17 +12,12 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 public class MealStorage implements MealStorageInterface {
     private static final Logger log = getLogger(Meal.class);
-    private static final MealStorage INSTANCE = new MealStorage();
     private static int counter;
     private volatile Map<Integer, Meal> storage;
 
-    private MealStorage() {
+    public MealStorage() {
         counter = 0;
         this.storage = new HashMap<>();
-    }
-
-    public static MealStorage getStorage() {
-        return INSTANCE;
     }
 
     @Override
