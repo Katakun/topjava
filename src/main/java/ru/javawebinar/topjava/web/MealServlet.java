@@ -32,7 +32,6 @@ public class MealServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws javax.servlet.ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
 
-        int id = Integer.parseInt(request.getParameter("id"));
         LocalDateTime localDateTime = LocalDateTime.parse(request.getParameter("dateTime"), DATETIMEFORMATTER);
         String description = request.getParameter("description");
         int calories = Integer.parseInt(request.getParameter("calories"));
@@ -40,6 +39,7 @@ public class MealServlet extends HttpServlet {
         String action = request.getParameter("action");
         switch (action) {
             case "Edit":
+                int id = Integer.parseInt(request.getParameter("id"));
                 Meal editMeal = storage.get(id);
                 editMeal.setDateTime(localDateTime);
                 editMeal.setDescription(description);
@@ -78,10 +78,9 @@ public class MealServlet extends HttpServlet {
                     request.getRequestDispatcher("/edit.jsp").forward(request, response);
                     break;
                 case "add":
-                    Meal meal = new Meal(LocalDateTime.now(), "", 0);
-                    request.setAttribute("meal", meal);
+                    request.setAttribute("meal", new Meal(LocalDateTime.now(), "", 0));
                     request.setAttribute("action", "Add");
-                    request.getRequestDispatcher("edit.jsp").forward(request, response);
+                    request.getRequestDispatcher("/edit.jsp").forward(request, response);
                     break;
             }
         }

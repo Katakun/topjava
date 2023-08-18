@@ -38,6 +38,7 @@ public class MealMapStorage implements Storage {
     @Override
     public void save(Meal meal) {
         synchronized (this) {
+            meal.setId(counter);
             counter++;
         }
         storage.put(meal.getId(), meal);
