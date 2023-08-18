@@ -1,16 +1,16 @@
 package ru.javawebinar.topjava.util;
 
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.storage.MapMealStorage;
+import ru.javawebinar.topjava.storage.MealStorage;
 
 import java.time.LocalDateTime;
 import java.time.Month;
 
 public class MealsData {
     public static final int CALORIES_PER_DAY = 2000;
-    private static MapMealStorage storage = MapMealStorage.getStorage();
+    private static MealStorage storage = MealStorage.getStorage();
 
-    public static MapMealStorage getStorage() {
+    public static MealStorage getStorage() {
         return storage;
     }
 
