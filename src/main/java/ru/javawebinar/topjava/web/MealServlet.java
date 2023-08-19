@@ -2,7 +2,8 @@ package ru.javawebinar.topjava.web;
 
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.MealTo;
-import ru.javawebinar.topjava.storage.MealStorageInterface;
+import ru.javawebinar.topjava.storage.MealStorage;
+import ru.javawebinar.topjava.storage.MemoryMealStorage;
 import ru.javawebinar.topjava.util.MealsData;
 import ru.javawebinar.topjava.util.MealsUtil;
 
@@ -19,13 +20,12 @@ import java.util.List;
 public class MealServlet extends HttpServlet {
     DateTimeFormatter DATETIMEFORMATTER = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
     private List<MealTo> mealToList;
-    private MealStorageInterface storage;
+    private MealStorage storage;
 
 
     public void init() throws ServletException {
-        storage = MealsData.getStorage();
-        MealsData.fill();
-        mealToList = MealsUtil.filteredByStreams(MealsData.getStorage().getAll(),
+        storage = new MemoryMealStorage(MealsData.meals);
+        mealToList = MealsUtil.filteredByStreams(storage.getAll(),
                 LocalTime.of(0, 0), LocalTime.of(23, 59), MealsData.CALORIES_PER_DAY);
     }
 
@@ -51,7 +51,7 @@ public class MealServlet extends HttpServlet {
                 storage.create(newMeal);
                 break;
         }
-        mealToList = MealsUtil.filteredByStreams(MealsData.getStorage().getAll(),
+        mealToList = MealsUtil.filteredByStreams(storage.getAll(),
                 LocalTime.of(0, 0), LocalTime.of(23, 59), MealsData.CALORIES_PER_DAY);
         response.sendRedirect("meals");
     }
@@ -67,7 +67,7 @@ public class MealServlet extends HttpServlet {
                 case "delete":
                     int id = Integer.parseInt(request.getParameter("id"));
                     storage.delete(id);
-                    mealToList = MealsUtil.filteredByStreams(MealsData.getStorage().getAll(),
+                    mealToList = MealsUtil.filteredByStreams(storage.getAll(),
                             LocalTime.of(0, 0), LocalTime.of(23, 59), MealsData.CALORIES_PER_DAY);
                     response.sendRedirect("meals");
                     break;

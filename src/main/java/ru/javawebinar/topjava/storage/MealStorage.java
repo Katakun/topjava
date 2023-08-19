@@ -2,47 +2,16 @@ package ru.javawebinar.topjava.storage;
 
 import ru.javawebinar.topjava.model.Meal;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 
-public class MealStorage implements MealStorageInterface {
-    private AtomicInteger counter;
-    private Map<Integer, Meal> storage;
+public interface MealStorage {
+    Meal update(Meal meal);
 
-    public MealStorage() {
-        counter = new AtomicInteger(0);
-        storage = new ConcurrentHashMap<>();
-    }
+    Meal create(Meal meal);
 
-    @Override
-    public Meal update(Meal meal) {
-        storage.replace(meal.getId(), meal);
-        return meal;
-    }
+    Meal get(int index);
 
-    @Override
-    public Meal create(Meal meal) {
-        counter.incrementAndGet();
-        meal.setId(counter.get());
-        storage.put(meal.getId(), meal);
-        return meal;
-    }
+    void delete(int index);
 
-    @Override
-    public Meal get(int key) {
-        return storage.get(key);
-    }
-
-    @Override
-    public void delete(int key) {
-        storage.remove(key);
-    }
-
-    @Override
-    public List<Meal> getAll() {
-        return new ArrayList<>(storage.values());
-    }
+    List<Meal> getAll();
 }
