@@ -18,24 +18,21 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class MealServlet extends HttpServlet {
-    DateTimeFormatter DATETIMEFORMATTER = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
-    private List<MealTo> mealToList;
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
     private MealStorage storage;
-
 
     public void init() throws ServletException {
         storage = new MemoryMealStorage(MealsData.meals);
-        mealToList = MealsUtil.filteredByStreams(storage.getAll(),
-                LocalTime.of(0, 0), LocalTime.of(23, 59), MealsData.CALORIES_PER_DAY);
+        MealsUtil.filteredByStreams(storage.getAll(),
+                LocalTime.of(0, 0), LocalTime.of(23, 59),
+                MealsData.CALORIES_PER_DAY);
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws javax.servlet.ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
-
-        LocalDateTime localDateTime = LocalDateTime.parse(request.getParameter("dateTime"), DATETIMEFORMATTER);
+        LocalDateTime localDateTime = LocalDateTime.parse(request.getParameter("dateTime"), DATE_TIME_FORMATTER);
         String description = request.getParameter("description");
         int calories = Integer.parseInt(request.getParameter("calories"));
-
         String action = request.getParameter("action");
         switch (action) {
             case "Edit":
@@ -51,14 +48,17 @@ public class MealServlet extends HttpServlet {
                 storage.create(newMeal);
                 break;
         }
-        mealToList = MealsUtil.filteredByStreams(storage.getAll(),
-                LocalTime.of(0, 0), LocalTime.of(23, 59), MealsData.CALORIES_PER_DAY);
+        MealsUtil.filteredByStreams(storage.getAll(),
+                LocalTime.of(0, 0), LocalTime.of(23, 59),
+                MealsData.CALORIES_PER_DAY);
         response.sendRedirect("meals");
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setAttribute("mealToList", mealToList);
+        request.setAttribute("mealToList", MealsUtil.filteredByStreams(storage.getAll(),
+                LocalTime.of(0, 0), LocalTime.of(23, 59),
+                MealsData.CALORIES_PER_DAY));
         String action = request.getParameter("action");
         if (action == null) {
             request.getRequestDispatcher("meals.jsp").forward(request, response);
@@ -67,8 +67,9 @@ public class MealServlet extends HttpServlet {
                 case "delete":
                     int id = Integer.parseInt(request.getParameter("id"));
                     storage.delete(id);
-                    mealToList = MealsUtil.filteredByStreams(storage.getAll(),
-                            LocalTime.of(0, 0), LocalTime.of(23, 59), MealsData.CALORIES_PER_DAY);
+                    MealsUtil.filteredByStreams(storage.getAll(),
+                            LocalTime.of(0, 0), LocalTime.of(23, 59),
+                            MealsData.CALORIES_PER_DAY);
                     response.sendRedirect("meals");
                     break;
                 case "edit":
