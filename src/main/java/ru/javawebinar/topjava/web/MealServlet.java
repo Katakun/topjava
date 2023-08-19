@@ -49,23 +49,19 @@ public class MealServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setAttribute("mealToList", MealsUtil.filteredByStreams(storage.getAll(),
-                LocalTime.MIN, LocalTime.MAX, MealsData.CALORIES_PER_DAY));
         String action = request.getParameter("action");
         if (action == null) {
+            request.setAttribute("mealToList", MealsUtil.filteredByStreams(storage.getAll(), LocalTime.MIN, LocalTime.MAX, MealsData.CALORIES_PER_DAY));
             request.getRequestDispatcher("meals.jsp").forward(request, response);
         } else {
             switch (action) {
                 case "delete":
-                    int id = Integer.parseInt(request.getParameter("id"));
-                    storage.delete(id);
-                    MealsUtil.filteredByStreams(storage.getAll(),
-                            LocalTime.MIN, LocalTime.MAX, MealsData.CALORIES_PER_DAY);
+                    storage.delete(Integer.parseInt(request.getParameter("id")));
+                    request.setAttribute("mealToList", MealsUtil.filteredByStreams(storage.getAll(), LocalTime.MIN, LocalTime.MAX, MealsData.CALORIES_PER_DAY));
                     response.sendRedirect("meals");
                     break;
                 case "edit":
-                    id = Integer.parseInt(request.getParameter("id"));
-                    request.setAttribute("meal", storage.get(id));
+                    request.setAttribute("meal", storage.get(Integer.parseInt(request.getParameter("id"))));
                     request.setAttribute("action", "Edit");
                     request.getRequestDispatcher("/edit.jsp").forward(request, response);
                     break;
