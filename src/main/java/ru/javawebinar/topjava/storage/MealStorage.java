@@ -25,8 +25,8 @@ public class MealStorage implements MealStorageInterface {
 
     @Override
     public Meal create(Meal meal) {
-        meal.setId(counter.get());
         counter.incrementAndGet();
+        meal.setId(counter.get());
         storage.put(meal.getId(), meal);
         return meal;
     }
