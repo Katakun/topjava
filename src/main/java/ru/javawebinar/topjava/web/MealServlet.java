@@ -33,12 +33,9 @@ public class MealServlet extends HttpServlet {
         String action = request.getParameter("action");
         switch (action) {
             case "Edit":
-                int id = Integer.parseInt(request.getParameter("id"));
-                Meal editMeal = storage.get(id);
-                editMeal.setDateTime(localDateTime);
-                editMeal.setDescription(description);
-                editMeal.setCalories(calories);
-                storage.update(editMeal);
+                Meal editedMeal = new Meal(localDateTime, description, calories);
+                editedMeal.setId(Integer.parseInt(request.getParameter("id")));
+                storage.update(editedMeal);
                 break;
             case "Add":
                 Meal newMeal = new Meal(localDateTime, description, calories);
