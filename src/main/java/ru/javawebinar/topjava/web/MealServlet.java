@@ -1,7 +1,6 @@
 package ru.javawebinar.topjava.web;
 
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.model.MealTo;
 import ru.javawebinar.topjava.storage.MealStorage;
 import ru.javawebinar.topjava.storage.MemoryMealStorage;
 import ru.javawebinar.topjava.util.MealsData;
@@ -15,7 +14,6 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 public class MealServlet extends HttpServlet {
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
@@ -24,8 +22,7 @@ public class MealServlet extends HttpServlet {
     public void init() throws ServletException {
         storage = new MemoryMealStorage(MealsData.meals);
         MealsUtil.filteredByStreams(storage.getAll(),
-                LocalTime.of(0, 0), LocalTime.of(23, 59),
-                MealsData.CALORIES_PER_DAY);
+                LocalTime.MIN, LocalTime.MAX, MealsData.CALORIES_PER_DAY);
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws javax.servlet.ServletException, IOException {
@@ -49,16 +46,14 @@ public class MealServlet extends HttpServlet {
                 break;
         }
         MealsUtil.filteredByStreams(storage.getAll(),
-                LocalTime.of(0, 0), LocalTime.of(23, 59),
-                MealsData.CALORIES_PER_DAY);
+                LocalTime.MIN, LocalTime.MAX, MealsData.CALORIES_PER_DAY);
         response.sendRedirect("meals");
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setAttribute("mealToList", MealsUtil.filteredByStreams(storage.getAll(),
-                LocalTime.of(0, 0), LocalTime.of(23, 59),
-                MealsData.CALORIES_PER_DAY));
+                LocalTime.MIN, LocalTime.MAX, MealsData.CALORIES_PER_DAY));
         String action = request.getParameter("action");
         if (action == null) {
             request.getRequestDispatcher("meals.jsp").forward(request, response);
@@ -68,8 +63,7 @@ public class MealServlet extends HttpServlet {
                     int id = Integer.parseInt(request.getParameter("id"));
                     storage.delete(id);
                     MealsUtil.filteredByStreams(storage.getAll(),
-                            LocalTime.of(0, 0), LocalTime.of(23, 59),
-                            MealsData.CALORIES_PER_DAY);
+                            LocalTime.MIN, LocalTime.MAX, MealsData.CALORIES_PER_DAY);
                     response.sendRedirect("meals");
                     break;
                 case "edit":
