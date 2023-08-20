@@ -70,6 +70,9 @@ public class MealServlet extends HttpServlet {
                     request.setAttribute("action", "Add");
                     request.getRequestDispatcher("/edit.jsp").forward(request, response);
                     break;
+                default:
+                    request.setAttribute("mealToList", MealsUtil.filteredByStreams(storage.getAll(), LocalTime.MIN, LocalTime.MAX, MealsData.CALORIES_PER_DAY));
+                    request.getRequestDispatcher("meals.jsp").forward(request, response);
             }
         }
     }
