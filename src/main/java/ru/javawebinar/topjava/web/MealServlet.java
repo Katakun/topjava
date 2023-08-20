@@ -71,13 +71,13 @@ public class MealServlet extends HttpServlet {
                 case "edit":
                     request.setAttribute("meal", storage.get(Integer.parseInt(request.getParameter("id"))));
                     request.setAttribute("action", "Edit");
-                    request.getRequestDispatcher("/edit.jsp").forward(request, response);
+                    request.getRequestDispatcher("/mealEdit.jsp").forward(request, response);
                     log.debug("doGet/edit");
                     break;
                 case "add":
                     request.setAttribute("meal", new Meal(LocalDateTime.now(), "", 0));
                     request.setAttribute("action", "Add");
-                    request.getRequestDispatcher("/edit.jsp").forward(request, response);
+                    request.getRequestDispatcher("/mealEdit.jsp").forward(request, response);
                     log.debug("doGet/add");
                     break;
                 default:
