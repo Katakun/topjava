@@ -1,6 +1,7 @@
 package ru.javawebinar.topjava.storage;
 
 import ru.javawebinar.topjava.model.Meal;
+import ru.javawebinar.topjava.util.MealsUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,11 +16,7 @@ public class MemoryMealStorage implements MealStorage {
     public MemoryMealStorage() {
         counter = new AtomicInteger(0);
         storage = new ConcurrentHashMap<>();
-    }
-
-    public MemoryMealStorage(List<Meal> meals) {
-        this();
-        for (Meal meal : meals) {
+        for (Meal meal : MealsUtil.meals) {
             create(meal);
         }
     }

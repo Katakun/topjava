@@ -24,7 +24,7 @@ public class MealServlet extends HttpServlet {
     private MealStorage storage;
 
     public void init() throws ServletException {
-        storage = new MemoryMealStorage(MealsUtil.meals);
+        storage = new MemoryMealStorage();
         MealsUtil.filteredByStreams(storage.getAll(),
                 LocalTime.MIN, LocalTime.MAX, MealsUtil.CALORIES_PER_DAY);
     }
