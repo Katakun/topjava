@@ -10,21 +10,12 @@
 <h3><a href="index.html">Home</a></h3>
 <hr>
 
-<jps:useBean id="action" type="java.lang.String" scope="request"/>
-<h2>${action} meal</h2>
+<h2>${meal.id > 0 ? 'Edit meal' : 'Add meal'}</h2>
 <form method="post" action="meals" enctype="application/x-www-form-urlencoded">
-    <input type="hidden" name="action" value="${action}">
-    <c:if test="${action eq 'Edit'}">
-        <input type="hidden" name="id" value="${meal.id}">
-    </c:if>
-    DateTime:
-    <input type="datetime-local" name="dateTime" value="${meal.dateTime}"/><br>
-
-    Description:
-    <input type="text" name="description" value="${meal.description}"/><br>
-
-    Calories:
-    <input type="number" name="calories" value="${meal.calories}"/><br>
+    <input type="hidden" name="id" value="${meal.id}">
+    DateTime: <input type="datetime-local" name="dateTime" value="${meal.dateTime}"/><br>
+    Description: <input type="text" name="description" value="${meal.description}"/><br>
+    Calories: <input type="number" name="calories" value="${meal.calories}"/><br>
     <button type="submit">Save</button>
     <button type="reset" onclick="window.history.back()">Cancel</button>
 </form>

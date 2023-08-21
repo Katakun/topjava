@@ -30,25 +30,23 @@ public class MealServlet extends HttpServlet {
         LocalDateTime localDateTime = LocalDateTime.parse(request.getParameter("dateTime"));
         String description = request.getParameter("description");
         int calories = Integer.parseInt(request.getParameter("calories"));
-        String action = request.getParameter("action");
-        switch (action) {
-            case "Edit":
-                log.debug("doPost/edit");
-                Meal editedMeal = new Meal(localDateTime, description, calories);
-                editedMeal.setId(Integer.parseInt(request.getParameter("id")));
-                storage.update(editedMeal);
-                break;
-            case "Add":
-                log.debug("doPost/add");
-                Meal newMeal = new Meal(localDateTime, description, calories);
-                storage.create(newMeal);
-                break;
+        int id = Integer.parseInt(request.getParameter("id"));
+        if (id > 0) {
+            log.debug("doPost/edit");
+            Meal editedMeal = new Meal(localDateTime, description, calories);
+            editedMeal.setId(id);
+            storage.update(editedMeal);
+        } else {
+            log.debug("doPost/add");
+            Meal newMeal = new Meal(localDateTime, description, calories);
+            storage.create(newMeal);
         }
         response.sendRedirect("meals");
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         String action = request.getParameter("action");
         if (action == null) {
             log.debug("action == null");
