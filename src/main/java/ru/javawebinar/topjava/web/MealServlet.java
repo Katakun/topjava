@@ -3,7 +3,6 @@ package ru.javawebinar.topjava.web;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.storage.MealStorage;
 import ru.javawebinar.topjava.storage.MemoryMealStorage;
-import ru.javawebinar.topjava.util.MealsData;
 import ru.javawebinar.topjava.util.MealsUtil;
 
 import javax.servlet.ServletException;
@@ -25,9 +24,9 @@ public class MealServlet extends HttpServlet {
     private MealStorage storage;
 
     public void init() throws ServletException {
-        storage = new MemoryMealStorage(MealsData.meals);
+        storage = new MemoryMealStorage(MealsUtil.meals);
         MealsUtil.filteredByStreams(storage.getAll(),
-                LocalTime.MIN, LocalTime.MAX, MealsData.CALORIES_PER_DAY);
+                LocalTime.MIN, LocalTime.MAX, MealsUtil.CALORIES_PER_DAY);
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws javax.servlet.ServletException, IOException {
@@ -50,7 +49,7 @@ public class MealServlet extends HttpServlet {
                 break;
         }
         MealsUtil.filteredByStreams(storage.getAll(),
-                LocalTime.MIN, LocalTime.MAX, MealsData.CALORIES_PER_DAY);
+                LocalTime.MIN, LocalTime.MAX, MealsUtil.CALORIES_PER_DAY);
         response.sendRedirect("meals");
     }
 
@@ -59,14 +58,14 @@ public class MealServlet extends HttpServlet {
         String action = request.getParameter("action");
         if (action == null) {
             log.debug("action == null");
-            request.setAttribute("mealToList", MealsUtil.filteredByStreams(storage.getAll(), LocalTime.MIN, LocalTime.MAX, MealsData.CALORIES_PER_DAY));
+            request.setAttribute("mealToList", MealsUtil.filteredByStreams(storage.getAll(), LocalTime.MIN, LocalTime.MAX, MealsUtil.CALORIES_PER_DAY));
             request.getRequestDispatcher("meals.jsp").forward(request, response);
         } else {
             switch (action) {
                 case "delete":
                     log.debug("doGet/delete");
                     storage.delete(Integer.parseInt(request.getParameter("id")));
-                    request.setAttribute("mealToList", MealsUtil.filteredByStreams(storage.getAll(), LocalTime.MIN, LocalTime.MAX, MealsData.CALORIES_PER_DAY));
+                    request.setAttribute("mealToList", MealsUtil.filteredByStreams(storage.getAll(), LocalTime.MIN, LocalTime.MAX, MealsUtil.CALORIES_PER_DAY));
                     response.sendRedirect("meals");
                     break;
                 case "edit":
@@ -83,7 +82,7 @@ public class MealServlet extends HttpServlet {
                     break;
                 default:
                     log.debug("doGet/default");
-                    request.setAttribute("mealToList", MealsUtil.filteredByStreams(storage.getAll(), LocalTime.MIN, LocalTime.MAX, MealsData.CALORIES_PER_DAY));
+                    request.setAttribute("mealToList", MealsUtil.filteredByStreams(storage.getAll(), LocalTime.MIN, LocalTime.MAX, MealsUtil.CALORIES_PER_DAY));
                     request.getRequestDispatcher("meals.jsp").forward(request, response);
             }
         }
