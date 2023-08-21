@@ -30,30 +30,23 @@ public class MemoryMealStorage implements MealStorage {
 
     @Override
     public Meal create(Meal meal) {
-        counter.incrementAndGet();
-        meal.setId(counter.get());
+        meal.setId(counter.incrementAndGet());
         storage.put(meal.getId(), meal);
         return meal;
     }
 
     @Override
-    public Meal get(int key) {
-        return storage.get(key);
+    public Meal get(int id) {
+        return storage.get(id);
     }
 
     @Override
-    public void delete(int key) {
-        storage.remove(key);
+    public void delete(int id) {
+        storage.remove(id);
     }
 
     @Override
     public List<Meal> getAll() {
         return new ArrayList<>(storage.values());
-    }
-
-    public void fill(List<Meal> meals) {
-        for (Meal meal : meals) {
-            create(meal);
-        }
     }
 }
