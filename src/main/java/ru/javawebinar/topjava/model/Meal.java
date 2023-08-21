@@ -19,7 +19,7 @@ public class Meal {
     }
 
     public int getId() {
-        return id;
+        return id != null ? id : -1;
     }
 
     public void setId(int id) {
@@ -32,10 +32,6 @@ public class Meal {
 
     public void setDateTime(LocalDateTime dateTime) {
         this.dateTime = dateTime;
-    }
-
-    public String getDateTimeInString() {
-        return dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
     }
 
     public String getDescription() {

@@ -18,7 +18,7 @@
         <input type="hidden" name="id" value="${meal.id}">
     </c:if>
     DateTime:
-    <input type="datetime-local" name="dateTime" value="${meal.dateTimeInString}"/><br>
+    <input type="datetime-local" name="dateTime" value="${meal.dateTime}"/><br>
 
     Description:
     <input type="text" name="description" value="${meal.description}"/><br>
