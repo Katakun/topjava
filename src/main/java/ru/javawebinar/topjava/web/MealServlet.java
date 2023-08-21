@@ -47,40 +47,29 @@ public class MealServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String action = request.getParameter("action");
-        if (action == null) {
-            log.debug("action == null");
-            request.setAttribute("mealToList", MealsUtil.filteredByStreams(
-                    storage.getAll(), LocalTime.MIN, LocalTime.MAX, MealsUtil.CALORIES_PER_DAY));
-            request.getRequestDispatcher("meals.jsp").forward(request, response);
-        } else {
-            switch (action) {
-                case "delete":
-                    log.debug("doGet/delete");
-                    storage.delete(Integer.parseInt(request.getParameter("id")));
-                    request.setAttribute("mealToList", MealsUtil.filteredByStreams(
-                            storage.getAll(), LocalTime.MIN, LocalTime.MAX, MealsUtil.CALORIES_PER_DAY));
-                    response.sendRedirect("meals");
-                    break;
-                case "edit":
-                    log.debug("doGet/edit");
-                    request.setAttribute("meal", storage.get(Integer.parseInt(request.getParameter("id"))));
-                    request.setAttribute("action", "Edit");
-                    request.getRequestDispatcher("/mealEdit.jsp").forward(request, response);
-                    break;
-                case "add":
-                    log.debug("doGet/add");
-                    request.setAttribute("meal", new Meal(
-                            LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 0));
-                    request.setAttribute("action", "Add");
-                    request.getRequestDispatcher("/mealEdit.jsp").forward(request, response);
-                    break;
-                default:
-                    log.debug("doGet/default");
-                    request.setAttribute("mealToList", MealsUtil.filteredByStreams(
-                            storage.getAll(), LocalTime.MIN, LocalTime.MAX, MealsUtil.CALORIES_PER_DAY));
-                    request.getRequestDispatcher("meals.jsp").forward(request, response);
-            }
+        String action = request.getParameter("action") != null ? request.getParameter("action") : "null";
+        switch (action) {
+            case "delete":
+                log.debug("doGet/delete");
+                storage.delete(Integer.parseInt(request.getParameter("id")));
+                response.sendRedirect("meals");
+                break;
+            case "edit":
+                log.debug("doGet/edit");
+                request.setAttribute("meal", storage.get(Integer.parseInt(request.getParameter("id"))));
+                request.getRequestDispatcher("/mealEdit.jsp").forward(request, response);
+                break;
+            case "add":
+                log.debug("doGet/add");
+                request.setAttribute("meal", new Meal(
+                        LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 0));
+                request.getRequestDispatcher("/mealEdit.jsp").forward(request, response);
+                break;
+            default:
+                log.debug("doGet/default");
+                request.setAttribute("mealToList", MealsUtil.filteredByStreams(
+                        storage.getAll(), LocalTime.MIN, LocalTime.MAX, MealsUtil.CALORIES_PER_DAY));
+                request.getRequestDispatcher("meals.jsp").forward(request, response);
         }
     }
 }
