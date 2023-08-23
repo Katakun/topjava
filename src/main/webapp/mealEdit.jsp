@@ -10,7 +10,7 @@
 <h3><a href="index.html">Home</a></h3>
 <hr>
 
-<h2>${meal.id > 0 ? 'Edit meal' : 'Add meal'}</h2>
+<h2>${meal.id != null ? 'Edit meal' : 'Add meal'}</h2>
 <form method="post" action="meals" enctype="application/x-www-form-urlencoded">
     <input type="hidden" name="id" value="${meal.id}">
     DateTime: <input type="datetime-local" name="dateTime" value="${meal.dateTime}"/><br>

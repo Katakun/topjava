@@ -30,11 +30,11 @@ public class MealServlet extends HttpServlet {
         LocalDateTime localDateTime = LocalDateTime.parse(request.getParameter("dateTime"));
         String description = request.getParameter("description");
         int calories = Integer.parseInt(request.getParameter("calories"));
-        int id = Integer.parseInt(request.getParameter("id"));
-        if (id > 0) {
+        String id = request.getParameter("id");
+        if (!id.isEmpty()) {
             log.debug("doPost/edit");
             Meal editedMeal = new Meal(localDateTime, description, calories);
-            editedMeal.setId(id);
+            editedMeal.setId(Integer.parseInt(id));
             storage.update(editedMeal);
         } else {
             log.debug("doPost/add");
