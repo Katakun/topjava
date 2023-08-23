@@ -36,8 +36,7 @@ public class MealServlet extends HttpServlet {
         String id = request.getParameter("id");
         if (!id.isEmpty()) {
             log.debug("doPost/edit");
-            Meal editedMeal = new Meal(localDateTime, description, calories);
-            editedMeal.setId(Integer.parseInt(id));
+            Meal editedMeal = new Meal(Integer.parseInt(id), localDateTime, description, calories);
             storage.update(editedMeal);
         } else {
             log.debug("doPost/add");
