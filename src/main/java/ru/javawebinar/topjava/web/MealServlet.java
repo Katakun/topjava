@@ -13,16 +13,19 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
-
 public class MealServlet extends HttpServlet {
-    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
     private static final Logger log = getLogger(MealServlet.class);
-    private MealStorage storage = new MemoryMealStorage();
+    private MealStorage storage;
+
+    @Override
+    public void init() throws ServletException {
+        super.init();
+        storage = new MemoryMealStorage();
+    }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws javax.servlet.ServletException, IOException {
@@ -47,7 +50,7 @@ public class MealServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String action = request.getParameter("action") != null ? request.getParameter("action") : "null";
+        String action = String.valueOf(request.getParameter("action"));
         switch (action) {
             case "delete":
                 log.debug("doGet/delete");
