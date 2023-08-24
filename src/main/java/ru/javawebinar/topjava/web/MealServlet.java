@@ -23,7 +23,6 @@ public class MealServlet extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
-        super.init();
         storage = new MemoryMealStorage();
     }
 
