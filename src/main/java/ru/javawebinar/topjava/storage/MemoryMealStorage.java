@@ -23,8 +23,8 @@ public class MemoryMealStorage implements MealStorage {
 
     @Override
     public Meal update(Meal meal) {
-        storage.replace(meal.getId(), meal);
-        return storage.get(meal.getId());
+        Meal oldMeal = storage.replace(meal.getId(), meal);
+        return oldMeal != null ? meal : null;
     }
 
     @Override

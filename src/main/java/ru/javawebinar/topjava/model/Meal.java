@@ -21,7 +21,6 @@ public class Meal {
         this(null, dateTime, description, calories);
     }
 
-
     public Integer getId() {
         return id;
     }
