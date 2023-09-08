@@ -61,8 +61,8 @@ public class InMemoryMealRepository implements MealRepository {
                 .collect(Collectors.toList());
     }
 
-    private boolean isMealBelongToUser(int id) {
-        Integer userId = repository.get(id).getUserId();
+    private boolean isMealBelongToUser(int mealId) {
+        Integer userId = repository.get(mealId).getUserId();
         if (userId != null) {
             return userId.equals(SecurityUtil.authUserId());
         }
