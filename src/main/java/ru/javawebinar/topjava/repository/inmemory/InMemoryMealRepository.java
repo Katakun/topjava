@@ -2,9 +2,11 @@ package ru.javawebinar.topjava.repository.inmemory;
 
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
+import ru.javawebinar.topjava.util.DateTimeUtil;
 import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.web.SecurityUtil;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Map;
@@ -51,7 +53,6 @@ public class InMemoryMealRepository implements MealRepository {
         return null;
     }
 
-
     @Override
     public Collection<Meal> getAll() {
         return repository.values()
@@ -61,10 +62,17 @@ public class InMemoryMealRepository implements MealRepository {
                 .collect(Collectors.toList());
     }
 
+    public Collection<Meal> getFilteredByDate(LocalDate startDate, LocalDate endTime) {
+        return getAll()
+                .stream()
+                .filter(meal -> DateTimeUtil.isDateBetween(meal.getDate(), startDate, endTime))
+                .collect(Collectors.toList());
+    }
+
     private boolean isMealBelongToUser(int mealId) {
-        Integer userId = repository.get(mealId).getUserId();
-        if (userId != null) {
-            return userId.equals(SecurityUtil.authUserId());
+        Meal meal = repository.get(mealId);
+        if (meal != null && meal.getUserId() != null) {
+            return meal.getUserId().equals(SecurityUtil.authUserId());
         }
         return false;
     }
