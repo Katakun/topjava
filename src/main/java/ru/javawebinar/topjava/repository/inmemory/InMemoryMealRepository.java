@@ -2,7 +2,6 @@ package ru.javawebinar.topjava.repository.inmemory;
 
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
-import ru.javawebinar.topjava.util.DateTimeUtil;
 import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.web.SecurityUtil;
 
@@ -13,6 +12,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+
+import static ru.javawebinar.topjava.util.DateTimeUtil.isDateBetween;
 
 public class InMemoryMealRepository implements MealRepository {
     private final Map<Integer, Meal> repository = new ConcurrentHashMap<>();
@@ -65,7 +66,7 @@ public class InMemoryMealRepository implements MealRepository {
     public Collection<Meal> getFilteredByDate(LocalDate startDate, LocalDate endTime) {
         return getAll()
                 .stream()
-                .filter(meal -> DateTimeUtil.isDateBetween(meal.getDate(), startDate, endTime))
+                .filter(meal -> isDateBetween(meal.getDate(), startDate, endTime))
                 .collect(Collectors.toList());
     }
 
@@ -77,4 +78,3 @@ public class InMemoryMealRepository implements MealRepository {
         return false;
     }
 }
-

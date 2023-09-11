@@ -5,15 +5,17 @@ import org.slf4j.LoggerFactory;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.to.MealTo;
-import ru.javawebinar.topjava.util.DateTimeUtil;
 import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.web.user.ProfileRestController;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static ru.javawebinar.topjava.util.DateTimeUtil.isBetweenHalfOpen;
+import static ru.javawebinar.topjava.util.DateTimeUtil.isDateBetween;
 import static ru.javawebinar.topjava.util.ValidationUtil.assureIdConsistent;
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNew;
 
@@ -22,28 +24,32 @@ public class MealRestController {
     ProfileRestController profileRestController = new ProfileRestController();
     private MealService service;
 
-    public List<MealTo> getAll() {
+    public List<MealTo> getAllMealTo() {
         log.info("getAll");
         return MealsUtil.getTos(service.getAll(), profileRestController.get().getCaloriesPerDay());
+    }
+
+    public List<Meal> getAllMeal() {
+        log.info("getAll");
+        return new ArrayList<>(service.getAll());
     }
 
     public List<MealTo> getFilteredByDateAndTime(
             LocalDate startDate, LocalTime startTime, LocalDate endDate, LocalTime endTime) {
         log.info("getFilteredByDateAndTime startDate={} startTime={} endDate={} endTime={} ",
                 startDate, startTime, endDate, endTime);
-        return getAll().stream()
-                .filter(mealTo -> DateTimeUtil.isDateBetween(
+        return getAllMealTo()
+                .stream()
+                .filter(mealTo -> isDateBetween(
                         mealTo.getDateTime().toLocalDate(), startDate, endDate))
-                .filter(mealTo -> DateTimeUtil.isBetweenHalfOpen(
+                .filter(mealTo -> isBetweenHalfOpen(
                         mealTo.getDateTime().toLocalTime(), startTime, endTime))
                 .collect(Collectors.toList());
     }
 
     public Meal get(int id) {
         log.info("get {}", id);
-        Meal meal = service.get(id);
-        assureIdConsistent(profileRestController.get(), meal.getUserId());
-        return meal;
+        return service.get(id);
     }
 
     public Meal create(Meal meal) {
@@ -54,13 +60,12 @@ public class MealRestController {
 
     public void delete(int id) {
         log.info("delete {}", id);
-        assureIdConsistent(profileRestController.get(), service.get(id).getUserId());
         service.delete(id);
     }
 
     public void update(Meal meal, int id) {
         log.info("update {} with id={}", meal, id);
-        assureIdConsistent(profileRestController.get(), meal.getUserId());
+        assureIdConsistent(meal, id);
         service.update(meal);
     }
 }
