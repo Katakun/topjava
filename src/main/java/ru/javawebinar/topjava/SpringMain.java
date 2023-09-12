@@ -2,10 +2,16 @@ package ru.javawebinar.topjava;
 
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
+import ru.javawebinar.topjava.web.meal.MealRestController;
 import ru.javawebinar.topjava.web.user.AdminRestController;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.Month;
 import java.util.Arrays;
 
 public class SpringMain {
@@ -15,6 +21,26 @@ public class SpringMain {
             System.out.println("Bean definition names: " + Arrays.toString(appCtx.getBeanDefinitionNames()));
             AdminRestController adminUserController = appCtx.getBean(AdminRestController.class);
             adminUserController.create(new User(null, "userName", "email@mail.ru", "password", Role.ADMIN));
+            MealRestController mealRestController = appCtx.getBean(MealRestController.class);
+            mealRestController.getAllMealTo()
+                    .stream()
+                    .forEach(System.out::println);
+            mealRestController.getAllMeal()
+                    .stream()
+                    .forEach(System.out::println);
+
+            LocalDate startDate = LocalDate.of(2020, Month.JANUARY, 31);
+            LocalDate endDate = LocalDate.of(2020, Month.JANUARY, 31);
+            LocalTime startTime = LocalTime.of(10, 00);
+            LocalTime endTime = LocalTime.of(15, 00);
+
+            mealRestController.getFilteredByDateAndTime(startDate, startTime, endDate, endTime)
+                    .stream()
+                    .forEach(System.out::println);
+
+            LocalDateTime ldt = LocalDateTime.now();
+            mealRestController.create(new Meal(ldt, "Created in springMain", 500));
+            System.out.println(mealRestController.get(8));
         }
     }
 }
