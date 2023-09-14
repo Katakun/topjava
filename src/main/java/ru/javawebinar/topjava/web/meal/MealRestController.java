@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.to.MealTo;
+import ru.javawebinar.topjava.util.DateTimeUtil;
 import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.web.user.ProfileRestController;
 
@@ -16,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static ru.javawebinar.topjava.util.DateTimeUtil.isBetweenHalfOpen;
 import static ru.javawebinar.topjava.util.DateTimeUtil.isDateBetween;
 import static ru.javawebinar.topjava.util.ValidationUtil.assureIdConsistent;
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNew;
@@ -28,6 +28,7 @@ public class MealRestController {
     @Autowired
     ProfileRestController profileRestController;
     private final MealService service;
+    DateTimeUtil<LocalTime> dtu = new DateTimeUtil<>();
 
     public MealRestController(MealService service) {
         this.service = service;
@@ -51,7 +52,7 @@ public class MealRestController {
                 .stream()
                 .filter(mealTo -> isDateBetween(
                         mealTo.getDateTime().toLocalDate(), startDate, endDate))
-                .filter(mealTo -> isBetweenHalfOpen(
+                .filter(mealTo -> dtu.isBetweenHalfOpen(
                         mealTo.getDateTime().toLocalTime(), startTime, endTime))
                 .collect(Collectors.toList());
     }
