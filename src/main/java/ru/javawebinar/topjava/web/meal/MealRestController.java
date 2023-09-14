@@ -9,52 +9,43 @@ import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.to.MealTo;
 import ru.javawebinar.topjava.util.DateTimeUtil;
 import ru.javawebinar.topjava.util.MealsUtil;
+import ru.javawebinar.topjava.web.SecurityUtil;
 import ru.javawebinar.topjava.web.user.ProfileRestController;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static ru.javawebinar.topjava.util.DateTimeUtil.isDateBetween;
 import static ru.javawebinar.topjava.util.ValidationUtil.assureIdConsistent;
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNew;
 import static ru.javawebinar.topjava.web.SecurityUtil.authUserId;
 
 @Controller
 public class MealRestController {
-    protected final Logger log = LoggerFactory.getLogger(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
     @Autowired
     ProfileRestController profileRestController;
-    private final MealService service;
-    DateTimeUtil<LocalTime> dtu = new DateTimeUtil<>();
-
-    public MealRestController(MealService service) {
-        this.service = service;
-    }
+    @Autowired
+    private MealService service;
+    private DateTimeUtil<LocalTime> dtu = new DateTimeUtil<>();
 
     public List<MealTo> getAllMealTo() {
         log.info("getAll");
-        return MealsUtil.getTos(service.getAll(authUserId()), profileRestController.get().getCaloriesPerDay());
-    }
-
-    public List<Meal> getAllMeal() {
-        log.info("getAll");
-        return new ArrayList<>(service.getAll(authUserId()));
+        return MealsUtil.getTos(service.getAll(authUserId()), SecurityUtil.authUserCaloriesPerDay());
     }
 
     public List<MealTo> getFilteredByDateAndTime(
             LocalDate startDate, LocalTime startTime, LocalDate endDate, LocalTime endTime) {
         log.info("getFilteredByDateAndTime startDate={} startTime={} endDate={} endTime={} ",
                 startDate, startTime, endDate, endTime);
-        return getAllMealTo()
+        Collection<Meal> meals = service.getAllFilteredByDate(
+                        startDate, endDate, SecurityUtil.authUserId())
                 .stream()
-                .filter(mealTo -> isDateBetween(
-                        mealTo.getDateTime().toLocalDate(), startDate, endDate))
-                .filter(mealTo -> dtu.isBetweenHalfOpen(
-                        mealTo.getDateTime().toLocalTime(), startTime, endTime))
+                .filter(meal -> dtu.isBetweenHalfOpen(meal.getTime(), startTime, endTime))
                 .collect(Collectors.toList());
+        return MealsUtil.getTos(meals, SecurityUtil.authUserCaloriesPerDay());
     }
 
     public Meal get(int mealId) {

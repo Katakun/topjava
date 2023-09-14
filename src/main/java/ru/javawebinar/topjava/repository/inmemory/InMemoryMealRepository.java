@@ -64,7 +64,7 @@ public class InMemoryMealRepository implements MealRepository {
                 .collect(Collectors.toList());
     }
 
-    public Collection<Meal> getFilteredByDate(LocalDate startDate, LocalDate endTime, int userId) {
+    public Collection<Meal> getAllFilteredByDate(LocalDate startDate, LocalDate endTime, int userId) {
         return getAll(userId)
                 .stream()
                 .filter(meal -> isDateBetween(meal.getDate(), startDate, endTime))

@@ -25,9 +25,6 @@ public class SpringMain {
             mealRestController.getAllMealTo()
                     .stream()
                     .forEach(System.out::println);
-            mealRestController.getAllMeal()
-                    .stream()
-                    .forEach(System.out::println);
 
             LocalDate startDate = LocalDate.of(2020, Month.JANUARY, 31);
             LocalDate endDate = LocalDate.of(2020, Month.JANUARY, 31);
