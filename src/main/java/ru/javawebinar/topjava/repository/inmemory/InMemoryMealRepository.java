@@ -8,6 +8,7 @@ import ru.javawebinar.topjava.util.MealsUtil;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -56,7 +57,7 @@ public class InMemoryMealRepository implements MealRepository {
     }
 
     @Override
-    public Collection<Meal> getAll(int userId) {
+    public List<Meal> getAll(int userId) {
         return repository.values()
                 .stream()
                 .filter(meal -> isMealBelongToUser(meal.getId(), userId))
