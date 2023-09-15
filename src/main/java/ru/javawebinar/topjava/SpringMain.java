@@ -37,7 +37,7 @@ public class SpringMain {
 
             LocalDateTime ldt = LocalDateTime.now();
             mealRestController.create(new Meal(ldt, "Created in springMain", 500));
-            System.out.println(mealRestController.get(8));
+            System.out.println(mealRestController.get(15));
         }
     }
 }
