@@ -9,15 +9,11 @@ import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.to.MealTo;
 import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.web.SecurityUtil;
-import ru.javawebinar.topjava.web.user.ProfileRestController;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import static ru.javawebinar.topjava.util.DateTimeUtil.isBetweenHalfOpen;
 import static ru.javawebinar.topjava.util.ValidationUtil.assureIdConsistent;
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNew;
 import static ru.javawebinar.topjava.web.SecurityUtil.authUserId;
@@ -25,8 +21,6 @@ import static ru.javawebinar.topjava.web.SecurityUtil.authUserId;
 @Controller
 public class MealRestController {
     private final Logger log = LoggerFactory.getLogger(getClass());
-    @Autowired
-    ProfileRestController profileRestController;
     @Autowired
     private MealService service;
 
@@ -39,12 +33,9 @@ public class MealRestController {
             LocalDate startDate, LocalTime startTime, LocalDate endDate, LocalTime endTime) {
         log.info("getFilteredByDateAndTime startDate={} startTime={} endDate={} endTime={} ",
                 startDate, startTime, endDate, endTime);
-        Collection<Meal> meals = service.getAllFilteredByDate(
-                        startDate, endDate, SecurityUtil.authUserId())
-                .stream()
-                .filter(meal -> isBetweenHalfOpen(meal.getTime(), startTime, endTime))
-                .collect(Collectors.toList());
-        return MealsUtil.getTos(meals, SecurityUtil.authUserCaloriesPerDay());
+        return MealsUtil.getFilteredByTimeTos(
+                service.getAllFilteredByDate(startDate, endDate, SecurityUtil.authUserId()),
+                SecurityUtil.authUserCaloriesPerDay(), startTime, endTime);
     }
 
     public Meal get(int mealId) {

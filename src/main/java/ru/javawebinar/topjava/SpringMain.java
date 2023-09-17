@@ -26,10 +26,10 @@ public class SpringMain {
                     .stream()
                     .forEach(System.out::println);
 
-            LocalDate startDate = LocalDate.of(2020, Month.JANUARY, 31);
-            LocalDate endDate = LocalDate.of(2020, Month.JANUARY, 31);
-            LocalTime startTime = LocalTime.of(10, 00);
-            LocalTime endTime = LocalTime.of(15, 00);
+            LocalDate startDate = LocalDate.of(2020, Month.JANUARY, 21);
+            LocalDate endDate = LocalDate.of(2020, Month.JANUARY, 21);
+            LocalTime startTime = LocalTime.of(00, 00);
+            LocalTime endTime = LocalTime.of(20, 00);
 
             mealRestController.getFilteredByDateAndTime(startDate, startTime, endDate, endTime)
                     .stream()
