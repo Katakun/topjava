@@ -6,7 +6,10 @@ import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.MealsUtil;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
@@ -58,9 +61,10 @@ public class InMemoryMealRepository implements MealRepository {
 
     @Override
     public List<Meal> getAll(int userId) {
-        return new ArrayList<>(filterByPredicate(repository.values(), userId, meal -> true));
+        return filterByPredicate(repository.values(), userId, meal -> true);
     }
 
+    @Override
     public List<Meal> getAllFilteredByDate(LocalDate startDate, LocalDate endTime, int userId) {
         return filterByPredicate(repository.values(), userId,
                 meal -> isDateBetween(meal.getDate(), startDate, endTime));
@@ -70,9 +74,8 @@ public class InMemoryMealRepository implements MealRepository {
         return meals.stream()
                 .filter(meal -> meal.getUserId().equals(userId))
                 .filter(filter)
-                .sorted(Comparator.comparing(Meal::getDate).reversed())
+                .sorted(Comparator.comparing(Meal::getDateTime).reversed())
                 .collect(Collectors.toList());
-
     }
 
     private boolean isMealBelongToUser(int mealId, int userId) {
