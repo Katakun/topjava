@@ -61,12 +61,12 @@ public class InMemoryMealRepository implements MealRepository {
         return new ArrayList<>(filterByPredicate(repository.values(), userId, meal -> true));
     }
 
-    public Collection<Meal> getAllFilteredByDate(LocalDate startDate, LocalDate endTime, int userId) {
+    public List<Meal> getAllFilteredByDate(LocalDate startDate, LocalDate endTime, int userId) {
         return filterByPredicate(repository.values(), userId,
                 meal -> isDateBetween(meal.getDate(), startDate, endTime));
     }
 
-    private Collection<Meal> filterByPredicate(Collection<Meal> meals, int userId, Predicate<Meal> filter) {
+    private List<Meal> filterByPredicate(Collection<Meal> meals, int userId, Predicate<Meal> filter) {
         return meals.stream()
                 .filter(meal -> meal.getUserId().equals(userId))
                 .filter(filter)
