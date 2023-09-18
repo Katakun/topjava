@@ -19,7 +19,7 @@ import static ru.javawebinar.topjava.util.DateTimeUtil.isDateBetween;
 
 @Repository
 public class InMemoryMealRepository implements MealRepository {
-    private final Map<Integer, Meal> repository = new ConcurrentHashMap<>();
+    private final Map<Integer, Map<Integer, Meal>> repository = new ConcurrentHashMap<>();
     private final AtomicInteger counter = new AtomicInteger(0);
 
     {   // TODO remove hardcode
@@ -32,11 +32,12 @@ public class InMemoryMealRepository implements MealRepository {
         if (meal.isNew()) {
             meal.setId(counter.incrementAndGet());
             meal.setUserId(userId);
-            repository.put(meal.getId(), meal);
+            repository.putIfAbsent(meal.getId(), new ConcurrentHashMap<>());
+            repository.get(userId).put(meal.getId(), meal);
             return meal;
         } else if (isMealBelongToUser(meal.getId(), userId)) {
             meal.setUserId(userId);
-            return repository.computeIfPresent(meal.getId(), (id, oldMeal) -> meal);
+            return repository.get(userId).computeIfPresent(meal.getId(), (id, oldMeal) -> meal);
         } else {
             return null;
         }
@@ -45,14 +46,14 @@ public class InMemoryMealRepository implements MealRepository {
     @Override
     public boolean delete(int mealId, int userId) {
         if (isMealBelongToUser(mealId, userId)) {
-            return repository.remove(mealId) != null;
+            return repository.get(userId).remove(mealId) != null;
         }
         return false;
     }
 
     @Override
     public Meal get(int mealId, int userId) {
-        Meal meal = repository.get(mealId);
+        Meal meal = repository.get(userId).get(mealId);
         if (meal != null && meal.getUserId().equals(userId)) {
             return meal;
         }
@@ -61,12 +62,12 @@ public class InMemoryMealRepository implements MealRepository {
 
     @Override
     public List<Meal> getAll(int userId) {
-        return filterByPredicate(repository.values(), userId, meal -> true);
+        return filterByPredicate(repository.get(userId).values(), userId, meal -> true);
     }
 
     @Override
     public List<Meal> getAllFilteredByDate(LocalDate startDate, LocalDate endTime, int userId) {
-        return filterByPredicate(repository.values(), userId,
+        return filterByPredicate(repository.get(userId).values(), userId,
                 meal -> isDateBetween(meal.getDate(), startDate, endTime));
     }
 
@@ -79,7 +80,7 @@ public class InMemoryMealRepository implements MealRepository {
     }
 
     private boolean isMealBelongToUser(int mealId, int userId) {
-        Meal meal = repository.get(mealId);
+        Meal meal = repository.get(userId).get(mealId);
         if (meal != null) {
             return meal.getUserId().equals(userId);
         }

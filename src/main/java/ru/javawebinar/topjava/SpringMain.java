@@ -26,8 +26,8 @@ public class SpringMain {
                     .stream()
                     .forEach(System.out::println);
 
-            LocalDate startDate = LocalDate.of(2020, Month.JANUARY, 20);
-            LocalDate endDate = LocalDate.of(2020, Month.JANUARY, 20);
+            LocalDate startDate = LocalDate.of(2020, Month.JANUARY, 21);
+            LocalDate endDate = LocalDate.of(2020, Month.JANUARY, 21);
             LocalTime startTime = LocalTime.of(10, 00);
             LocalTime endTime = LocalTime.of(14, 00);
 
