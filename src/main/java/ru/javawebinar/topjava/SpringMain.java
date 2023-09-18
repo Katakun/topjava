@@ -23,7 +23,6 @@ public class SpringMain {
             adminUserController.create(new User(null, "userName", "email@mail.ru", "password", Role.ADMIN));
             MealRestController mealRestController = appCtx.getBean(MealRestController.class);
             mealRestController.getAllMealTo()
-                    .stream()
                     .forEach(System.out::println);
 
             LocalDate startDate = LocalDate.of(2020, Month.JANUARY, 21);
@@ -32,7 +31,6 @@ public class SpringMain {
             LocalTime endTime = LocalTime.of(14, 00);
 
             mealRestController.getFilteredByDateAndTime(startDate, startTime, endDate, endTime)
-                    .stream()
                     .forEach(System.out::println);
 
             LocalDateTime ldt = LocalDateTime.now();
