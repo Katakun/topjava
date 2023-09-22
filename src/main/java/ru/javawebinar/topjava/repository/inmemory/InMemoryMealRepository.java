@@ -4,9 +4,9 @@ import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.MealsUtil;
+import ru.javawebinar.topjava.util.ValidationUtil;
 
 import java.time.LocalDate;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -24,66 +24,56 @@ public class InMemoryMealRepository implements MealRepository {
 
     {   // TODO remove hardcode
         MealsUtil.mealsUser1.forEach(meal -> save(meal, 1));
-        MealsUtil.mealsUser2.forEach(meal -> save(meal, 2));
+//        MealsUtil.mealsUser2.forEach(meal -> save(meal, 2));
     }
 
     @Override
     public Meal save(Meal meal, int userId) {
         if (meal.isNew()) {
             meal.setId(counter.incrementAndGet());
-            meal.setUserId(userId);
-            repository.putIfAbsent(meal.getId(), new ConcurrentHashMap<>());
-            repository.get(userId).put(meal.getId(), meal);
-            return meal;
-        } else if (isMealBelongToUser(meal.getId(), userId)) {
-            meal.setUserId(userId);
-            return repository.get(userId).computeIfPresent(meal.getId(), (id, oldMeal) -> meal);
-        } else {
-            return null;
+            return repository.computeIfAbsent(userId, v -> new ConcurrentHashMap<>())
+                    .put(meal.getId(), meal);
         }
+        Map<Integer, Meal> mealMap = repository.get(userId);
+        return mealMap != null ? mealMap.computeIfPresent(meal.getId(), (k, v) -> meal) : null;
     }
 
     @Override
     public boolean delete(int mealId, int userId) {
-        if (isMealBelongToUser(mealId, userId)) {
-            return repository.get(userId).remove(mealId) != null;
-        }
-        return false;
+        return ValidationUtil
+                .checkNotFoundWithId(repository.get(userId), userId)
+                .remove(mealId) != null;
     }
 
     @Override
     public Meal get(int mealId, int userId) {
-        Meal meal = repository.get(userId).get(mealId);
-        if (meal != null && meal.getUserId().equals(userId)) {
-            return meal;
-        }
-        return null;
+        return ValidationUtil
+                .checkNotFoundWithId(repository.get(userId), userId)
+                .get(mealId);
     }
 
     @Override
     public List<Meal> getAll(int userId) {
-        return filterByPredicate(repository.get(userId).values(), userId, meal -> true);
+        return ValidationUtil
+                .checkNotFoundWithId(filterByPredicate(userId, meal -> true), userId);
     }
 
     @Override
     public List<Meal> getAllFilteredByDate(LocalDate startDate, LocalDate endTime, int userId) {
-        return filterByPredicate(repository.get(userId).values(), userId,
-                meal -> isDateBetween(meal.getDate(), startDate, endTime));
+        return ValidationUtil
+                .checkNotFoundWithId(filterByPredicate(userId,
+                        meal -> isDateBetween(meal.getDate(), startDate, endTime)), userId);
     }
 
-    private List<Meal> filterByPredicate(Collection<Meal> meals, int userId, Predicate<Meal> filter) {
-        return meals.stream()
-                .filter(meal -> meal.getUserId().equals(userId))
-                .filter(filter)
-                .sorted(Comparator.comparing(Meal::getDateTime).reversed())
-                .collect(Collectors.toList());
-    }
-
-    private boolean isMealBelongToUser(int mealId, int userId) {
-        Meal meal = repository.get(userId).get(mealId);
-        if (meal != null) {
-            return meal.getUserId().equals(userId);
+    private List<Meal> filterByPredicate(int userId, Predicate<Meal> filter) {
+        Map<Integer, Meal> mealMap = repository.get(userId);
+        if (mealMap != null) {
+            return mealMap.values()
+                    .stream()
+                    .filter(filter)
+                    .sorted(Comparator.comparing(Meal::getDateTime).reversed())
+                    .collect(Collectors.toList());
         }
-        return false;
+        return null;
     }
 }

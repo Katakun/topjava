@@ -5,7 +5,7 @@ import static ru.javawebinar.topjava.util.MealsUtil.DEFAULT_CALORIES_PER_DAY;
 public class SecurityUtil {
 
     public static int authUserId() {
-        return 2; // TODO hardcode
+        return 1; // TODO hardcode
     }
 
     public static int authUserCaloriesPerDay() {

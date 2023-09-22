@@ -25,8 +25,8 @@ public class SpringMain {
             mealRestController.getAllMealTo()
                     .forEach(System.out::println);
 
-            LocalDate startDate = LocalDate.of(2020, Month.JANUARY, 21);
-            LocalDate endDate = LocalDate.of(2020, Month.JANUARY, 21);
+            LocalDate startDate = LocalDate.of(2020, Month.JANUARY, 31);
+            LocalDate endDate = LocalDate.of(2020, Month.JANUARY, 31);
             LocalTime startTime = LocalTime.of(10, 00);
             LocalTime endTime = LocalTime.of(14, 00);
 
@@ -35,7 +35,7 @@ public class SpringMain {
 
             LocalDateTime ldt = LocalDateTime.now();
             mealRestController.create(new Meal(ldt, "Created in springMain", 500));
-            System.out.println(mealRestController.get(15));
+            System.out.println(mealRestController.get(5));
         }
     }
 }
