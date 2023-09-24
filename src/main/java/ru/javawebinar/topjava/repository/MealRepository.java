@@ -15,8 +15,9 @@ public interface MealRepository {
     // null if meal does not belong to userId
     Meal get(int mealId, int userId);
 
-    // ORDERED dateTime desc
+    // ORDERED dateTime desc or empty list
     List<Meal> getAll(int userId);
 
+    // or empty list
     List<Meal> getAllFilteredByDate(LocalDate start, LocalDate end, int userId);
 }
