@@ -6,7 +6,7 @@ import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.MealsUtil;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -71,6 +71,6 @@ public class InMemoryMealRepository implements MealRepository {
                     .sorted(Comparator.comparing(Meal::getDateTime).reversed())
                     .collect(Collectors.toList());
         }
-        return new ArrayList<>();
+        return Collections.emptyList();
     }
 }

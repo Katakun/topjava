@@ -27,8 +27,8 @@ public class SpringMain {
 
             LocalDate startDate = LocalDate.of(2020, Month.JANUARY, 31);
             LocalDate endDate = LocalDate.of(2020, Month.JANUARY, 31);
-            LocalTime startTime = LocalTime.of(10, 00);
-            LocalTime endTime = LocalTime.of(14, 00);
+            LocalTime startTime = LocalTime.of(10, 0);
+            LocalTime endTime = LocalTime.of(14, 0);
 
             mealRestController.getFilteredByDateAndTime(startDate, startTime, endDate, endTime)
                     .forEach(System.out::println);
