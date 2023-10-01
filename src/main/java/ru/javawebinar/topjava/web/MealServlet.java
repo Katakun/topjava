@@ -12,7 +12,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
@@ -30,9 +32,24 @@ public class MealServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         request.setCharacterEncoding("UTF-8");
         String id = request.getParameter("id");
+
+        String isFilterOn = request.getParameter("filter");
+        if ("isOn".equals(isFilterOn)) {
+            LocalDate startDate = request.getParameter("startDate").isEmpty() ?
+                    LocalDate.MIN : LocalDate.parse(request.getParameter("startDate"));
+            LocalDate endDate = request.getParameter("endDate").isEmpty() ?
+                    LocalDate.MAX : LocalDate.parse(request.getParameter("endDate"));
+            LocalTime startTime = request.getParameter("startTime").isEmpty() ?
+                    LocalTime.MIN : LocalTime.parse(request.getParameter("startTime"));
+            LocalTime endTime = request.getParameter("endTime").isEmpty() ?
+                    LocalTime.MAX : LocalTime.parse(request.getParameter("endTime"));
+            request.setAttribute("meals", mealRestController.getFilteredByDateAndTime(
+                    startDate, startTime, endDate, endTime));
+            request.getRequestDispatcher("/meals.jsp").forward(request, response);
+        }
 
         Meal meal = new Meal(id.isEmpty() ? null : Integer.valueOf(id),
                 LocalDateTime.parse(request.getParameter("dateTime")),
