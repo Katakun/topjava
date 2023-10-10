@@ -24,7 +24,7 @@ public class InMemoryMealRepository implements MealRepository {
 
     {   // TODO remove hardcode
         MealsUtil.mealsUser1.forEach(meal -> save(meal, 1));
-//        MealsUtil.mealsUser2.forEach(meal -> save(meal, 2));
+        MealsUtil.mealsUser2.forEach(meal -> save(meal, 2));
     }
 
     @Override
