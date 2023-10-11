@@ -35,9 +35,9 @@ public class MealServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         request.setCharacterEncoding("UTF-8");
         String id = request.getParameter("id");
+        boolean isFilter = Boolean.parseBoolean(request.getParameter("isFilter"));
 
-        String isFilterOn = request.getParameter("filter");
-        if ("isOn".equals(isFilterOn)) {
+        if (isFilter) {
             LocalDate startDate = request.getParameter("startDate").isEmpty() ?
                     LocalDate.MIN : LocalDate.parse(request.getParameter("startDate"));
             LocalDate endDate = request.getParameter("endDate").isEmpty() ?
@@ -49,20 +49,19 @@ public class MealServlet extends HttpServlet {
             request.setAttribute("meals", mealRestController.getFilteredByDateAndTime(
                     startDate, startTime, endDate, endTime));
             request.getRequestDispatcher("/meals.jsp").forward(request, response);
-        }
-
-        Meal meal = new Meal(id.isEmpty() ? null : Integer.valueOf(id),
-                LocalDateTime.parse(request.getParameter("dateTime")),
-                request.getParameter("description"),
-                Integer.parseInt(request.getParameter("calories")));
-
-        log.info(meal.isNew() ? "Create {}" : "Update {}", meal);
-        if (meal.isNew()) {
-            mealRestController.create(meal);
         } else {
-            mealRestController.update(meal, meal.getId());
+            Meal meal = new Meal(id.isEmpty() ? null : Integer.valueOf(id),
+                    LocalDateTime.parse(request.getParameter("dateTime")),
+                    request.getParameter("description"),
+                    Integer.parseInt(request.getParameter("calories")));
+            log.info(meal.isNew() ? "Create {}" : "Update {}", meal);
+            if (meal.isNew()) {
+                mealRestController.create(meal);
+            } else {
+                mealRestController.update(meal, meal.getId());
+            }
+            response.sendRedirect("meals");
         }
-        response.sendRedirect("meals");
     }
 
     @Override

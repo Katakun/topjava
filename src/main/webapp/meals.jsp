@@ -22,7 +22,7 @@
     <hr/>
     <h2>Meals</h2>
     <form method="post" action="meals">
-        <input type="hidden" name="filter" value="isOn">
+        <input type="hidden" name="isFilter" value="true">
         <label for="startDate">От даты (включая)</label>
         <input id="startDate" type="date" name="startDate" value="${param.startDate}"><br>
 
