@@ -24,16 +24,16 @@
     <form method="post" action="meals">
         <input type="hidden" name="filter" value="isOn">
         <label for="startDate">От даты (включая)</label>
-        <input id="startDate" type="date" name="startDate"><br>
+        <input id="startDate" type="date" name="startDate" value="${param.startDate}"><br>
 
         <label for="endDate">До даты (включая)</label>
-        <input id="endDate" type="date" name="endDate"><br><br>
+        <input id="endDate" type="date" name="endDate" value="${param.endDate}"><br><br>
 
         <label for="startTime">От времени (включая)</label>
-        <input id="startTime" type="time" name="startTime"><br>
+        <input id="startTime" type="time" name="startTime" value="${param.startTime}"><br>
 
         <label for="endTime">До времени (исключая)</label>
-        <input id="endTime" type="time" name="endTime"><br><br>
+        <input id="endTime" type="time" name="endTime" value="${param.endTime}"><br><br>
 
         <button type="submit">Отфильтровать</button><br>
     </form>
