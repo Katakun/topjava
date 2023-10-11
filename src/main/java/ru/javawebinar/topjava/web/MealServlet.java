@@ -20,15 +20,16 @@ import java.util.Objects;
 
 public class MealServlet extends HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(MealServlet.class);
-
     private MealRestController mealRestController;
+    ConfigurableApplicationContext appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml");
 
     @Override
     public void init() {
-        try (ConfigurableApplicationContext appCtx =
-                     new ClassPathXmlApplicationContext("spring/spring-app.xml")) {
-            mealRestController = appCtx.getBean(MealRestController.class);
-        }
+        mealRestController = appCtx.getBean(MealRestController.class);
+    }
+
+    public void destroy() {
+        appCtx.close();
     }
 
     @Override
@@ -86,9 +87,7 @@ public class MealServlet extends HttpServlet {
             case "all":
             default:
                 log.info("getAll");
-                request.setAttribute("meals",
-                        mealRestController.getAllMealTo()
-                );
+                request.setAttribute("meals", mealRestController.getAllMealTo());
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
         }
