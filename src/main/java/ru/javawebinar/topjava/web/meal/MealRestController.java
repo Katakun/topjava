@@ -33,6 +33,12 @@ public class MealRestController {
             LocalDate startDate, LocalTime startTime, LocalDate endDate, LocalTime endTime) {
         log.info("getFilteredByDateAndTime startDate={} startTime={} endDate={} endTime={} ",
                 startDate, startTime, endDate, endTime);
+
+        startDate = startDate == null ? LocalDate.MIN : startDate;
+        endDate = endDate == null ? LocalDate.MAX : endDate;
+        startTime = startTime == null ? LocalTime.MIN : startTime;
+        endTime = endTime == null ? LocalTime.MAX : endTime;
+
         return MealsUtil.getFilteredByTimeTos(
                 service.getAllFilteredByDate(startDate, endDate, authUserId()),
                 authUserCaloriesPerDay(), startTime, endTime);
