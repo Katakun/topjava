@@ -21,8 +21,8 @@
     <h3><a href="index.html">Home</a></h3>
     <hr/>
     <h2>Meals</h2>
-    <form method="post" action="meals">
-        <input type="hidden" name="isFilter" value="true">
+    <form method="get" action="meals">
+        <input type="hidden" name="action" value="filter">
         <label for="startDate">От даты (включая)</label>
         <input id="startDate" type="date" name="startDate" value="${param.startDate}"><br>
 

@@ -36,33 +36,17 @@ public class MealServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         request.setCharacterEncoding("UTF-8");
         String id = request.getParameter("id");
-        boolean isFilter = Boolean.parseBoolean(request.getParameter("isFilter"));
-
-        if (isFilter) {
-            LocalDate startDate = request.getParameter("startDate").isEmpty() ?
-                    LocalDate.MIN : LocalDate.parse(request.getParameter("startDate"));
-            LocalDate endDate = request.getParameter("endDate").isEmpty() ?
-                    LocalDate.MAX : LocalDate.parse(request.getParameter("endDate"));
-            LocalTime startTime = request.getParameter("startTime").isEmpty() ?
-                    LocalTime.MIN : LocalTime.parse(request.getParameter("startTime"));
-            LocalTime endTime = request.getParameter("endTime").isEmpty() ?
-                    LocalTime.MAX : LocalTime.parse(request.getParameter("endTime"));
-            request.setAttribute("meals", mealRestController.getFilteredByDateAndTime(
-                    startDate, startTime, endDate, endTime));
-            request.getRequestDispatcher("/meals.jsp").forward(request, response);
+        Meal meal = new Meal(id.isEmpty() ? null : Integer.valueOf(id),
+                LocalDateTime.parse(request.getParameter("dateTime")),
+                request.getParameter("description"),
+                Integer.parseInt(request.getParameter("calories")));
+        log.info(meal.isNew() ? "Create {}" : "Update {}", meal);
+        if (meal.isNew()) {
+            mealRestController.create(meal);
         } else {
-            Meal meal = new Meal(id.isEmpty() ? null : Integer.valueOf(id),
-                    LocalDateTime.parse(request.getParameter("dateTime")),
-                    request.getParameter("description"),
-                    Integer.parseInt(request.getParameter("calories")));
-            log.info(meal.isNew() ? "Create {}" : "Update {}", meal);
-            if (meal.isNew()) {
-                mealRestController.create(meal);
-            } else {
-                mealRestController.update(meal, meal.getId());
-            }
-            response.sendRedirect("meals");
+            mealRestController.update(meal, meal.getId());
         }
+        response.sendRedirect("meals");
     }
 
     @Override
@@ -70,6 +54,18 @@ public class MealServlet extends HttpServlet {
         String action = request.getParameter("action");
 
         switch (action == null ? "all" : action) {
+            case "filter":
+                LocalDate startDate = request.getParameter("startDate").isEmpty() ?
+                        LocalDate.MIN : LocalDate.parse(request.getParameter("startDate"));
+                LocalDate endDate = request.getParameter("endDate").isEmpty() ?
+                        LocalDate.MAX : LocalDate.parse(request.getParameter("endDate"));
+                LocalTime startTime = request.getParameter("startTime").isEmpty() ?
+                        LocalTime.MIN : LocalTime.parse(request.getParameter("startTime"));
+                LocalTime endTime = request.getParameter("endTime").isEmpty() ?
+                        LocalTime.MAX : LocalTime.parse(request.getParameter("endTime"));
+                request.setAttribute("meals", mealRestController.getFilteredByDateAndTime(
+                        startDate, startTime, endDate, endTime));
+                request.getRequestDispatcher("/meals.jsp").forward(request, response);
             case "delete":
                 int id = getId(request);
                 log.info("Delete id={}", id);
