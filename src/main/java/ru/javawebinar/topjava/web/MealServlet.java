@@ -68,6 +68,7 @@ public class MealServlet extends HttpServlet {
                 request.setAttribute("meals", mealRestController.getFilteredByDateAndTime(
                         startDate, startTime, endDate, endTime));
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
+                break;
             case "delete":
                 int id = getId(request);
                 log.info("Delete id={}", id);
