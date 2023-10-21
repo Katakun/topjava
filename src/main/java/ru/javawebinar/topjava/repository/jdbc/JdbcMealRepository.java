@@ -21,13 +21,9 @@ import java.util.stream.Collectors;
 
 @Repository
 public class JdbcMealRepository implements MealRepository {
-
     private static final BeanPropertyRowMapper<Meal> ROW_MAPPER = BeanPropertyRowMapper.newInstance(Meal.class);
-
     private final JdbcTemplate jdbcTemplate;
-
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-
     private final SimpleJdbcInsert insertMeal;
 
     @Autowired
@@ -35,7 +31,6 @@ public class JdbcMealRepository implements MealRepository {
         this.insertMeal = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("meals")
                 .usingGeneratedKeyColumns("id");
-
         this.jdbcTemplate = jdbcTemplate;
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
@@ -44,15 +39,15 @@ public class JdbcMealRepository implements MealRepository {
     public Meal save(Meal meal, int userId) {
         MapSqlParameterSource map = new MapSqlParameterSource()
                 .addValue("id", meal.getId())
+                .addValue("user_id", userId)
                 .addValue("dateTime", meal.getDateTime())
                 .addValue("description", meal.getDescription())
                 .addValue("calories", meal.getCalories());
         if (meal.isNew()) {
             Number newKey = insertMeal.executeAndReturnKey(map);
             meal.setId(newKey.intValue());
-        } else if (namedParameterJdbcTemplate.update(
-                "UPDATE meals SET id=:id, dateTime=:dateTime, description=:description, " +
-                        "calories=:calories WHERE id=:id", map) == 0) {
+        } else if (namedParameterJdbcTemplate.update("UPDATE meals SET dateTime=:dateTime, " +
+                "description=:description, calories=:calories WHERE id=:id", map) == 0) {
             return null;
         }
         return meal;
