@@ -40,13 +40,13 @@ public class JdbcMealRepository implements MealRepository {
         MapSqlParameterSource map = new MapSqlParameterSource()
                 .addValue("id", meal.getId())
                 .addValue("user_id", userId)
-                .addValue("dateTime", meal.getDateTime())
+                .addValue("date_time", meal.getDateTime())
                 .addValue("description", meal.getDescription())
                 .addValue("calories", meal.getCalories());
         if (meal.isNew()) {
             Number newKey = insertMeal.executeAndReturnKey(map);
             meal.setId(newKey.intValue());
-        } else if (namedParameterJdbcTemplate.update("UPDATE meals SET dateTime=:dateTime, " +
+        } else if (namedParameterJdbcTemplate.update("UPDATE meals SET date_time=:date_time, " +
                 "description=:description, calories=:calories WHERE id=:id AND user_id=:user_id", map) == 0) {
             return null;
         }
