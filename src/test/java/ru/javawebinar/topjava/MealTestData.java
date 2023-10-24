@@ -12,15 +12,15 @@ public class MealTestData {
     public static final int MEAL_ID = START_SEQ + 3;
     public static final int NON_EXIST_MEAL_ID = 333;
 
-    public static final Meal BREAKFAST_MEAL = new Meal(MEAL_ID,
+    public static final Meal userMeal1 = new Meal(MEAL_ID,
             LocalDateTime.of(2023, 1, 1, 8, 0),
             "Завтрак 500 ккал", 500);
 
-    public static final Meal LUNCH_MEAL = new Meal(MEAL_ID + 1,
+    public static final Meal userMeal2 = new Meal(MEAL_ID + 1,
             LocalDateTime.of(2023, 1, 2, 13, 30),
             "Обед 1000 ккал", 1000);
 
-    public static final Meal DINNER_MEAL = new Meal(MEAL_ID + 2,
+    public static final Meal userMeal3 = new Meal(MEAL_ID + 2,
             LocalDateTime.of(2023, 1, 3, 20, 50),
             "Ужин 500  ккал", 500);
 
@@ -42,7 +42,7 @@ public class MealTestData {
     }
 
     public static Meal getUpdated() {
-        Meal updated = new Meal(BREAKFAST_MEAL);
+        Meal updated = new Meal(userMeal1);
         updated.setDateTime(LocalDateTime.of(2023, 1, 9, 9, 59));
         updated.setDescription("mealTestData.getUpdates() updated");
         updated.setCalories(999);
